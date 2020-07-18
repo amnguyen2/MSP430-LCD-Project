@@ -7,7 +7,6 @@
 #include <lcddraw.h>
 #include <p2switches.h>
 
-
 /** Initializes everything, clears the screen, draws "hello" and the circle */
 void main()
 {
@@ -17,17 +16,15 @@ void main()
   or_sr(0x8);			/* GIE (enable interrupts) */
   u_char width = screenWidth, height = screenHeight;
 
-  clearScreen(COLOR_BLUE);
+  clearScreen(COLOR_BLACK);
 
-  //drawString8x12(10, 10, "switches:", COLOR_GREEN, COLOR_RED);
-  drawString5x7(10,10, "switches:", COLOR_GREEN, COLOR_RED);
+  drawString8x12(10, 10, "switches:", COLOR_GREEN, COLOR_BLUE);
   while (1) {
     u_int switches = p2sw_read(), i;
     char str[5];
     for (i = 0; i < 4; i++)
       str[i] = (switches & (1<<i)) ? '-' : '0'+i;
     str[4] = 0;
-    //drawString8x12(24, 24, str, COLOR_GREEN, COLOR_RED);
-    drawString5x7(20,20, str, COLOR_GREEN, COLOR_RED);
+    drawString8x12(24, 24, str, COLOR_GREEN, COLOR_BLUE);
   } 
 }
