@@ -8,11 +8,26 @@ static char state = 0;
 static char new_red_on;
 static char new_green_on;
 
+static char dimness = 0; // higher dimness = lower brightness
 static char f = 0; // for dimming functionality. is the led being flashed right now?
+
+void sm_update_dimness()
+{
+  switch(state) {
+  case 1: // mostly dim
+    dimness = 5;
+    break;
+  case 2: // fairly dim
+    dimness = 3;
+    break;
+  default: // fully bright
+    dimness = 0;
+  }
+}
 
 void sm_update_led()
 {
-  char dimness = 5; // higher dimness = lower brightness
+  sm_update_dimness(); // determine dimness based on current state
   f++; // f iterates from 0 to 'dimness'
   if (f > dimness) f = 0; // reset f back to 0
   
@@ -22,20 +37,21 @@ void sm_update_led()
     new_green_on = 0;
     break;
   case 1: // state 1
-    new_red_on = 0;
-    new_green_on = 1;
+    new_red_on = (f == 0);
+    new_green_on = 0;
     break;
   case 2: // state 2
-    new_red_on = 1;
+    new_red_on = (f == 0);
     new_green_on = 0;
     break;
   case 3:
     // dim both lights
-    new_red_on = (f == 0);
-    new_green_on = (f == 0);
+    new_red_on = 1;
+    new_green_on = 0;
     break;
   }
 
+  // check if leds changed
   if (red_on != new_red_on) {
     red_on = new_red_on;
     led_changed = 1;
@@ -51,11 +67,11 @@ void sm_update_buzzer()
 {
   switch(state) {
   case 0: // state 0
-    buzzer_set_period(0); // silent
+    play_song(); // saria's song (buzzer.c)
+    state = 1; // after song is played, auto transition to state 1
     break;
   case 1: // state 1
-    play_song();
-    state = 2; // after song is played, auto transition to state 2 
+    buzzer_set_period(0); 
     break;
   case 2: // state 2
     buzzer_set_period(0); // silent
@@ -98,10 +114,7 @@ void state_advance()
     state = 3;
 
   } else if (sw4_state_down) {
-    // advance state automatically (0,1,2,3,0)
-    state++;
-    if (state > 3) {
-      state = 0;
-    }
+    // ADD STATE 4
+    state = 4;
   }
 }
