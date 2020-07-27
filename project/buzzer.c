@@ -71,9 +71,10 @@ void play_song()
   int song[25] = {F4, A4, B4, B4, F4, A4, B4, B4, F4, A4, B4,
 		  E5, D5, D5, B4, C5, B4, G4, E4, E4, 0, D4, E4, G4, E4};
 
-  for (int i = 0; i < 25; i++) {
-    buzzer_set_period(song[i]);
-    __delay_cycles(5000000);
+  for (int i = 0; i < 25; i++) { // iterate through song
+    for (long j = 0; j < 125000; j++) { // play a note
+      buzzer_set_period(song[i]);
+    }
   }
   buzzer_set_period(0); // silence buzzer
   return;
