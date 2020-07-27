@@ -13,15 +13,17 @@
 #include <p2switches.h>
 #include <shape.h>
 #include <abCircle.h>
+#include "buzzer.h"
 
 #define GREEN_LED BIT6
 
+u_char state = 0;
+
 AbRect rect10 = {abRectGetBounds, abRectCheck, {10,10}}; /**< 10x10 rectangle */
-AbRArrow rightArrow = {abRArrowGetBounds, abRArrowCheck, 30};
 
 AbRectOutline fieldOutline = {	/* playing field */
   abRectOutlineGetBounds, abRectOutlineCheck,   
-  {screenWidth/2 - 10, screenHeight/2 - 10}
+  {screenWidth/2 - 20, screenHeight/2 - 20} 
 };
 
 Layer fieldLayer = {		/* playing field as a layer */
@@ -34,7 +36,7 @@ Layer fieldLayer = {		/* playing field as a layer */
 
 Layer layer1 = {		/**< Layer with a red square */
   (AbShape *)&rect10,
-  {screenWidth/2, 30}, /**< center */
+  {screenWidth/2, 50}, /**< center */
   {0,0}, {0,0},				    /* last & next pos */
   COLOR_RED,
   &fieldLayer,
@@ -91,8 +93,6 @@ void movLayerDraw(MovLayer *movLayers, Layer *layers)
   } // for moving layer being updated
 }	  
 
-//Region fence = {{10,30}, {SHORT_EDGE_PIXELS-10, LONG_EDGE_PIXELS-10}}; /**< Create a fence region */
-
 /** Advances a moving shape within a fence
  *  
  *  \param ml The moving shape to be advanced
@@ -112,7 +112,7 @@ void mlAdvance(MovLayer *ml, Region *fence)
       if ((shapeBoundary.topLeft.axes[axis] < fence->topLeft.axes[axis]) ||
 	  (shapeBoundary.botRight.axes[axis] > fence->botRight.axes[axis]) ) {
 
-	int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
+	int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis]; // bounce
 	newPos.axes[axis] += (2*velocity);
       }	/**< if outside of fence */
     } /**< for axis */
@@ -124,7 +124,6 @@ void write_on_blackboard() {
   // 14 8x12 chars fit across the screen            
   drawString8x12(40,screenHeight/2,    "DO NOT", COLOR_WHITE, COLOR_BLACK);
   drawString8x12(44,screenHeight/2+15, "ERASE", COLOR_WHITE, COLOR_BLACK);
-  drawString5x7(0 ,screenHeight-7,   "i'm safe :)", COLOR_WHITE, COLOR_BLACK);
 }
 
 u_int bgColor = COLOR_BLACK;     /**< The background color */
@@ -144,12 +143,16 @@ void main()
   lcd_init();
   p2sw_init(1); 
   shapeInit();
-
+  buzzer_init();
+  
   layerInit(&layer1);
   layerDraw(&layer1);
-
-  write_on_blackboard();
- 
+  
+  write_on_blackboard(); // write text on screen
+  play_song(1.25); // plays array of notes at certain speed
+  
+  drawString5x7(0,0, "i'm safe :)", COLOR_WHITE, COLOR_BLACK);
+  
   layerGetBounds(&fieldLayer, &fieldFence);
 
   enableWDTInterrupts();      /**< enable periodic interrupt */
