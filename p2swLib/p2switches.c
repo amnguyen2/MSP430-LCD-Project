@@ -37,9 +37,8 @@ p2sw_read() {
   return switches_current | (sw_changed << 8);
 }
 
-// REMOVED, DEFINED IN ../project/p2_interrupt_handler.c
-/* Switch on P2 (S1) */
-/*
+
+/* Switch on P2 */
 void
 __interrupt_vec(PORT2_VECTOR) Port_2(){
   if (P2IFG & switch_mask) {  // did a button cause this interrupt? 
@@ -47,4 +46,4 @@ __interrupt_vec(PORT2_VECTOR) Port_2(){
     switch_update_interrupt_sense();
   }
 }
-*/
+
