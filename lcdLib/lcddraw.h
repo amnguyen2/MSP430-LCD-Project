@@ -23,6 +23,15 @@ void drawPixel(u_char col, u_char row, u_int colorBGR);
  */
 void fillRectangle(u_char colMin, u_char rowMin, u_char width, u_char height, u_int colorBGR);
 
+/** Draw Triangle
+ *
+ *  \param colMin Column start
+ *  \param rowMin Row start
+ *  \param height height of triangle
+ *  \param colorBGR Color of triangle in BGR
+ */
+void drawTriangle(u_char colMin, u_char rowMin, u_char height, u_int colorBGR);
+
 /** Clear screen (fill with color)
  *  
  *  \param colorBGR The color to fill screen

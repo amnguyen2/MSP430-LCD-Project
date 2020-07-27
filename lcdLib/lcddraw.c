@@ -37,6 +37,25 @@ void fillRectangle(u_char colMin, u_char rowMin, u_char width, u_char height,
   }
 }
 
+/** Draw Triangle
+ *
+ *  \param colMin Column start
+ *  \param rowMin Row start
+ *  \param height height of triangle
+ *  \param colorBGR Color of triangle in BGR
+ */
+void drawTriangle(u_char colMin, u_char rowMin, u_char height, u_int colorBGR) {
+  float mod = 3.0; // used to change slope of hypotenuse (2.0 is 45 degrees)
+  for (int row = 0; row < height; row++) {
+    // "int col = row", right angle triangle
+    // "int col = row*2", left side moves inward
+    for (int col = 0; col < row*mod; col++) {
+      //drawPixel((col+colMin) + 0, row+rowMin, COLOR_RED);
+      drawPixel((col+colMin) + (height-row), row+rowMin, colorBGR);
+    }
+  }
+}
+    
 /** Clear screen (fill with color)
  *  
  *  \param colorBGR The color to fill screen
@@ -94,7 +113,6 @@ void drawString5x7(u_char col, u_char row, char *string,
   }
 }
 
-////
 
 /** 8x12 font - this function draws background pixels
  *  Adapted from RobG's EduKit
