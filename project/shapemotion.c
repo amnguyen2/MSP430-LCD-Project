@@ -15,9 +15,13 @@
 #include <abCircle.h>
 #include "buzzer.h"
 
+#include <stdio.h>
+
 #define GREEN_LED BIT6
+#define RED_LED BIT0
 
 u_char state = 0;
+u_char switches;
 
 AbRect rect10 = {abRectGetBounds, abRectCheck, {10,10}}; /**< 10x10 rectangle */
 
@@ -39,7 +43,7 @@ Layer layer1 = {		/**< Layer with a red square */
   {screenWidth/2, 50}, /**< center */
   {0,0}, {0,0},				    /* last & next pos */
   COLOR_RED,
-  &fieldLayer,
+  &fieldLayer
 };
 
 /** Moving Layer
@@ -126,6 +130,7 @@ void write_on_blackboard() {
   drawString8x12(44,screenHeight/2+15, "ERASE", COLOR_WHITE, COLOR_BLACK);
 }
 
+u_int triangleColor = COLOR_VIOLET;
 u_int bgColor = COLOR_BLACK;     /**< The background color */
 int redrawScreen = 1;           /**< Boolean for whether screen needs to be redrawn */
 
@@ -139,9 +144,11 @@ void main()
   P1DIR |= GREEN_LED;		/**< Green led on when CPU on */		
   P1OUT |= GREEN_LED;
 
+  P1DIR |= RED_LED;		
+  
   configureClocks();
   lcd_init();
-  p2sw_init(1); 
+  p2sw_init(3); // use all 4 buttons 
   shapeInit();
   buzzer_init();
   
@@ -173,14 +180,36 @@ void main()
 void wdt_c_handler()
 {
   static short count = 0;
+  
   P1OUT |= GREEN_LED;		      /**< Green LED on when cpu on */
-  count ++;
+  count++;
   if (count == 15) {
     mlAdvance(&ml1, &fieldFence);
-    if (p2sw_read()) {
-      //write_on_blackboard();
+    switches = p2sw_read();
+    
+    if ((switches & 0b0010) == 0b0010) {
       redrawScreen = 1;
     }
+
+    /*
+      drawTriangle(10, screenHeight-10, 10, COLOR_VIOLET);
+      triangleColor = COLOR_YELLOW;
+      drawTriangle(10, screenHeight-10, 10, triangleColor);
+      play_song(1.0);
+    */
+  
+    if ((switches & 0b0010) == 0b0010) { // sw2
+      
+    }
+
+    else if ((switches & 0b0100) == 0b0100) { // sw3
+      
+    }
+
+    else if ((switches & 0b1000) == 0b1000) { // sw4
+    
+    }
+    //switches = 0;
     count = 0;
   } 
   P1OUT &= ~GREEN_LED;		    /**< Green LED off when cpu off */
