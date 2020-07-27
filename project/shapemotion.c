@@ -14,14 +14,10 @@
 #include <shape.h>
 #include <abCircle.h>
 #include "buzzer.h"
+#include "led.h"
+#include "stateMachines.h"
 
-#include <stdio.h>
-
-#define GREEN_LED BIT6
-#define RED_LED BIT0
-
-u_char state = 0;
-u_char switches;
+extern char state;
 
 AbRect rect10 = {abRectGetBounds, abRectCheck, {10,10}}; /**< 10x10 rectangle */
 
@@ -35,15 +31,16 @@ Layer fieldLayer = {		/* playing field as a layer */
   {screenWidth/2, screenHeight/2},/**< center */
   {0,0}, {0,0},				    /* last & next pos */
   COLOR_WHITE,
-  0
+  0 // no layers afterward
 };
+
 
 Layer layer1 = {		/**< Layer with a red square */
   (AbShape *)&rect10,
   {screenWidth/2, 50}, /**< center */
   {0,0}, {0,0},				    /* last & next pos */
   COLOR_RED,
-  &fieldLayer
+  &fieldLayer // next layer
 };
 
 /** Moving Layer
@@ -130,6 +127,8 @@ void write_on_blackboard() {
   drawString8x12(44,screenHeight/2+15, "ERASE", COLOR_WHITE, COLOR_BLACK);
 }
 
+
+
 u_int triangleColor = COLOR_VIOLET;
 u_int bgColor = COLOR_BLACK;     /**< The background color */
 int redrawScreen = 1;           /**< Boolean for whether screen needs to be redrawn */
@@ -148,9 +147,10 @@ void main()
   
   configureClocks();
   lcd_init();
-  p2sw_init(3); // use all 4 buttons 
+  p2sw_init(15); // use all 4 buttons 
   shapeInit();
   buzzer_init();
+  led_init();
   
   layerInit(&layer1);
   layerDraw(&layer1);
@@ -165,6 +165,7 @@ void main()
   enableWDTInterrupts();      /**< enable periodic interrupt */
   or_sr(0x8);	              /**< GIE (enable interrupts) */
 
+  // main loop
   for(;;) { 
     while (!redrawScreen) { /**< Pause CPU if screen doesn't need updating */
       P1OUT &= ~GREEN_LED;    /**< Green led off witHo CPU */
@@ -173,6 +174,39 @@ void main()
     P1OUT |= GREEN_LED;       /**< Green led on when CPU on */
     redrawScreen = 0;
     movLayerDraw(&ml1, &layer1);
+
+    drawTriangle(10, screenHeight-10, 10, triangleColor); // this triangle will change color
+
+    // decide what happens with switches
+    u_int switches = p2sw_read(), i;
+    
+    char str[5];
+    for (i = 0; i < 4; i++) {
+      if (switches & (1<<i)) {
+	str[i] = '-';
+	
+      } else {
+	str[i] = '1'+i;
+	state_advance(i); // advance state machine
+	
+	if (i == 0) { // sw1
+	  triangleColor = COLOR_RED;
+	  write_on_blackboard();
+ 	  
+	} else if (i == 1) { // sw2
+	  triangleColor = COLOR_ORANGE;
+	  
+	} else if (i == 2) { // sw3
+	  triangleColor = COLOR_YELLOW;
+	  
+	} else if (i == 3) { // sw4
+	  triangleColor = COLOR_GREEN;
+	}
+      }	
+     
+    }
+    str[4] = 0;
+    drawString8x12(screenWidth-40, 0, str, COLOR_WHITE, COLOR_BLACK);
   }
 }
 
@@ -185,32 +219,11 @@ void wdt_c_handler()
   count++;
   if (count == 15) {
     mlAdvance(&ml1, &fieldFence);
-    switches = p2sw_read();
     
-    if ((switches & 0b0010) == 0b0010) {
+    if (p2sw_read()) {
       redrawScreen = 1;
     }
-
-    /*
-      drawTriangle(10, screenHeight-10, 10, COLOR_VIOLET);
-      triangleColor = COLOR_YELLOW;
-      drawTriangle(10, screenHeight-10, 10, triangleColor);
-      play_song(1.0);
-    */
-  
-    if ((switches & 0b0010) == 0b0010) { // sw2
-      
-    }
-
-    else if ((switches & 0b0100) == 0b0100) { // sw3
-      
-    }
-
-    else if ((switches & 0b1000) == 0b1000) { // sw4
-    
-    }
-    //switches = 0;
     count = 0;
-  } 
+  }
   P1OUT &= ~GREEN_LED;		    /**< Green LED off when cpu off */
 }
