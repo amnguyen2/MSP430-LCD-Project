@@ -47,8 +47,6 @@ const unsigned short B5 = 2024.76;
 // arrays of notes (songs)
 const int song[12] = {G4, Gb4, Eb4, A3, Ab3, E4, Ab4, C5, C5}; 
 
-//const int song2[25] = {F4, A4, B4, B4, F4, A4, B4, B4, F4, A4, B4, E5, D5, D5, B4, C5, B4, G4, E4, E4, 0, D4, E4, G4, E4};
-
 // speed is duration of a note, 125000 is a good speed to start with
 void play_song(float speed)
 {
@@ -59,7 +57,6 @@ void play_song(float speed)
     }
   }
   buzzer_set_period(0); // silence buzzer
-  return;
 }
 
 void buzzer_init()
