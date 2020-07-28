@@ -132,25 +132,21 @@ Region fieldFence;		/**< fence around playing field  */
  */
 void main()
 {
-  P1DIR |= GREEN_LED;		/**< Green led on when CPU on */		
-  P1OUT |= GREEN_LED;
+  // initialize tools
+  configureClocks(); // timer
+  lcd_init(); // lcd screen
+  shapeInit(); // shapes
+  p2sw_init(15); // buttons (0b1111, using 4 buttons) 
+  buzzer_init(); // buzzer
+  led_init(); // led lights
   
-  configureClocks();
-  lcd_init();
-  p2sw_init(15); // use all 4 buttons 
-  shapeInit();
-  buzzer_init();
-  led_init();
-  
-  layerInit(&layer1);
-  layerDraw(&layer1);
+  layerInit(&layer1); // setup layers
+  layerDraw(&layer1); // draw layers 
+  layerGetBounds(&fieldLayer, &fieldFence); // field arena
   
   write_on_blackboard(); // write text on screen
   play_song(1.25); // plays array of notes at certain speed
-  
-  drawString5x7(0,0, "i'm safe :)", COLOR_WHITE, COLOR_BLACK);
-  
-  layerGetBounds(&fieldLayer, &fieldFence);
+  drawString5x7(0,0, "i'm safe :)", COLOR_WHITE, COLOR_BLACK); // fun message
 
   enableWDTInterrupts();      /**< enable periodic interrupt */
   or_sr(0x8);	              /**< GIE (enable interrupts) */
@@ -167,7 +163,7 @@ void main()
 
     drawTriangle(10, screenHeight-10, 10, triangleColor); // this triangle will change color
 
-    // decide what happens with switches
+    // handling switch presses
     u_int switches = p2sw_read(), i;
     
     char str[5];
@@ -178,6 +174,7 @@ void main()
       } else {
 	str[i] = '1'+i;
 	state_advance(i+1); // advance state machine
+
 	sm_update_lcd(); // LCD screen update 
 	sm_update_buzzer(); // buzzer update
       }
