@@ -1,11 +1,9 @@
 #ifndef stateMachine_included
 #define stateMachine_included
 
-void state_advance(unsigned int in);
-
-void sm_update_dimness();
-void sm_update_led();
-void sm_update_buzzer();
-void sm_update_lcd();
+void sm_update_led(); // update led values
+void sm_update_buzzer(); // update buzzer sound
+void sm_update_lcd(); // update lcd screen
+void state_advance(unsigned int in); // determine state
 
 #endif

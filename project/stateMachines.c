@@ -3,7 +3,6 @@
 #include <lcddraw.h>
 #include "stateMachines.h"
 #include "led.h"
-#include "switches.h"
 #include "buzzer.h"
 
 static char state = 0;
@@ -13,13 +12,6 @@ static char new_red_on;
 static char dimness = 0; // higher dimness = lower brightness
 static char f = 0; // for dimming functionality. is the led being flashed right now?
 
-char toggle_red()
-{
-  if (red_on) red_on = 0;
-  else red_on = 1;
-  return 1;
-}
-    
 void sm_update_led()
 {
   dimness = 8;
