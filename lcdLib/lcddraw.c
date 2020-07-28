@@ -160,7 +160,18 @@ void drawString8x12(u_char col, u_char row, char *string,
     cols += 9;
   }
 }
-///
+
+/** Write a set message on the screen
+ * Using font8x12
+ * Write "DO NOT ERASE"
+ * For use in main and state machine
+ */
+void write_on_blackboard()
+{
+  // 14 8x12 chars fit across the screen            
+  drawString8x12(40,screenHeight/2,    "DO NOT", COLOR_WHITE, COLOR_BLACK);
+  drawString8x12(44,screenHeight/2+15, "ERASE", COLOR_WHITE, COLOR_BLACK);
+}
 
 /** Draw rectangle outline
  *  

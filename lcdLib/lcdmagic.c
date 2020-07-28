@@ -59,5 +59,8 @@ main()
       drawPixel(col, row, COLOR_BLACK);   // downward triangle
     }
   }
-  
+
+
+  clearScreen(COLOR_BLACK);
+  drawTriangle(10, 10, 20, COLOR_WHITE);
 }

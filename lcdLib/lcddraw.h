@@ -80,6 +80,13 @@ void drawString8x12(u_char col, u_char row, char *string,
 void drawChar8x12(u_char col, u_char row, char c, 
 		 u_int fgColorBGR, u_int bgColorBGR);
 
+/** Write a set message on the screen
+ * Using font8x12
+ * Write "DO NOT ERASE"
+ * For use in main and state machine
+ */
+void write_on_blackboard();
+
 /** Draw rectangle outline
  *  
  *  \param colMin Column start
