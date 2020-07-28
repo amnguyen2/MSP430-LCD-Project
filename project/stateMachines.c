@@ -4,6 +4,7 @@
 #include "stateMachines.h"
 #include "led.h"
 #include "buzzer.h"
+#include "stateAdvance.h"
 
 static char state = 0;
 extern unsigned int triangleColor;
@@ -71,8 +72,8 @@ void sm_update_lcd()
   }
 }
 
-void state_advance(unsigned int in)
-{
+
+void state_advance(unsigned int in) {
   switch(in) {
   case 1:
     state = 1;
@@ -83,8 +84,8 @@ void state_advance(unsigned int in)
   case 3:
     state = 3;
     break;
-  case 4:
-    state = 4;
+  default:
     break;
-  }  
+  }
 }
+

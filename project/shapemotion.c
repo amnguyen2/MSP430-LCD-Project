@@ -16,8 +16,10 @@
 #include "buzzer.h"
 #include "led.h"
 #include "stateMachines.h"
+#include "stateAdvance.h"
 
 extern char state;
+
 unsigned int triangleColor = COLOR_WHITE;
 
 AbRect rect10 = {abRectGetBounds, abRectCheck, {10,10}}; /**< 10x10 rectangle */
@@ -173,6 +175,7 @@ void main()
 	
       } else {
 	str[i] = '1'+i;
+	
 	state_advance(i+1); // advance state machine
 
 	sm_update_lcd(); // LCD screen update 
