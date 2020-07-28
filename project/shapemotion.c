@@ -172,12 +172,11 @@ void main()
     for (i = 0; i < 4; i++) {
       if (switches & (1<<i)) {
 	str[i] = '-';
-	
       } else {
 	str[i] = '1'+i;
 	
 	state_advance(i+1); // advance state machine
-
+	
 	sm_update_lcd(); // LCD screen update 
 	sm_update_buzzer(); // buzzer update
       }
