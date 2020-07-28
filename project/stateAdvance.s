@@ -8,9 +8,9 @@ jt:
 	.word case3		; jt[3]
 
 	.text
-	.global state_advance
+	.global state_advance_assembly
 	
-state_advance:
+state_advance_assembly:
 	cmp #4, r12
 	jnc default
 	
