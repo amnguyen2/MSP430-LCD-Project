@@ -18,6 +18,7 @@
 #include "stateMachines.h"
 
 extern char state;
+unsigned int triangleColor = COLOR_WHITE;
 
 AbRect rect10 = {abRectGetBounds, abRectCheck, {10,10}}; /**< 10x10 rectangle */
 
@@ -121,15 +122,6 @@ void mlAdvance(MovLayer *ml, Region *fence)
   } /**< for ml */
 }
 
-void write_on_blackboard() {
-  // 14 8x12 chars fit across the screen            
-  drawString8x12(40,screenHeight/2,    "DO NOT", COLOR_WHITE, COLOR_BLACK);
-  drawString8x12(44,screenHeight/2+15, "ERASE", COLOR_WHITE, COLOR_BLACK);
-}
-
-
-
-u_int triangleColor = COLOR_VIOLET;
 u_int bgColor = COLOR_BLACK;     /**< The background color */
 int redrawScreen = 1;           /**< Boolean for whether screen needs to be redrawn */
 
@@ -142,8 +134,6 @@ void main()
 {
   P1DIR |= GREEN_LED;		/**< Green led on when CPU on */		
   P1OUT |= GREEN_LED;
-
-  P1DIR |= RED_LED;		
   
   configureClocks();
   lcd_init();
@@ -187,25 +177,13 @@ void main()
 	
       } else {
 	str[i] = '1'+i;
-	state_advance(i); // advance state machine
-	
-	if (i == 0) { // sw1
-	  triangleColor = COLOR_RED;
-	  write_on_blackboard();
- 	  
-	} else if (i == 1) { // sw2
-	  triangleColor = COLOR_ORANGE;
-	  
-	} else if (i == 2) { // sw3
-	  triangleColor = COLOR_YELLOW;
-	  
-	} else if (i == 3) { // sw4
-	  triangleColor = COLOR_GREEN;
-	}
-      }	
-     
+	state_advance(i+1); // advance state machine
+	sm_update_lcd(); // LCD screen update 
+	sm_update_buzzer(); // buzzer update
+      }
+
     }
-    str[4] = 0;
+    str[4] = 0;  
     drawString8x12(screenWidth-40, 0, str, COLOR_WHITE, COLOR_BLACK);
   }
 }
@@ -213,6 +191,8 @@ void main()
 /** Watchdog timer interrupt handler. 15 interrupts/sec */
 void wdt_c_handler()
 {
+  sm_update_led(); // led must be updated for dimming
+  
   static short count = 0;
   
   P1OUT |= GREEN_LED;		      /**< Green LED on when cpu on */
@@ -220,7 +200,7 @@ void wdt_c_handler()
   if (count == 15) {
     mlAdvance(&ml1, &fieldFence);
     
-    if (p2sw_read()) {
+    if (p2sw_read() & 0x8) { // 0b1000 sw4
       redrawScreen = 1;
     }
     count = 0;
