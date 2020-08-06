@@ -165,7 +165,7 @@ void main()
   configureClocks();
   lcd_init();
   shapeInit();
-  p2sw_init(1);
+  p2sw_init(5);
 
   shapeInit();
 
