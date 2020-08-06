@@ -68,9 +68,10 @@ Program start-up:
 ## Notable Bug(s)
 
   - While in state 3 (button 3), the interrupts involving the dimming of the red LED
-  causes the LED screen not to be drawn as intended:
+  causes the LED screen not to be drawn as intended.
     - The moving red square begins to leave "trails" of itself. 
     - The 4th button indicator at the top-right of the screen begins to flash as a 
     red rectangle, leaving behind an odd red line beneath. 
     - There are other noticable pixels that seem to be drawn without purpose. 
-    - The extra pixels do not seem to go away until restart of the LCD screen. 
+    - The extra pixels do not seem to go away until restart of the LCD screen, but
+    other unwanted items on the screen seem to go away after state changes or time.
