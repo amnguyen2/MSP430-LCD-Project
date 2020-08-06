@@ -67,7 +67,7 @@ Program start-up:
    
 ## Notable Bug(s)
 
-  - While in state 3 (button 3), the interrupts involving the dimming of the red LED
+  - While in state 3, the interrupts involving the dimming of the red LED
   causes the LED screen not to be drawn as intended.
     - The moving red square begins to leave "trails" of itself. 
     - The 4th button indicator at the top-right of the screen begins to flash as a 
