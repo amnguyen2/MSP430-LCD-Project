@@ -10,10 +10,9 @@ jt:
 	.text
 	.global state_advance_assembly
 	
-state_advance_assembly:
+state_advance_assembly:	
 	cmp #4, r12
-	jnc default
-	
+	jc default
 	add r12, r12
 	mov jt(r12), r0		; jmp jt[state]
 
@@ -21,7 +20,7 @@ case1:
 	mov #1, r12
 	jmp end
 
-case2:
+case2:	
 	mov #2, r12
 	jmp end
 
@@ -30,6 +29,7 @@ case3:
 	jmp end
 
 default:
+	mov #0, r12
 	jmp end
 	
 end:

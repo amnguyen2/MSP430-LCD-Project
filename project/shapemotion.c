@@ -17,9 +17,9 @@
 #include "led.h"
 #include "stateMachines.h"
 #include "stateAdvance.h"
+#include "smUpdateLCD.h"
 
-extern char state;
-
+char state = 0;
 unsigned int triangleColor = COLOR_WHITE;
 
 AbRect rect10 = {abRectGetBounds, abRectCheck, {10,10}}; /**< 10x10 rectangle */
@@ -153,6 +153,8 @@ void main()
   enableWDTInterrupts();      /**< enable periodic interrupt */
   or_sr(0x8);	              /**< GIE (enable interrupts) */
 
+  char state = 0;
+  
   // main loop
   for(;;) { 
     while (!redrawScreen) { /**< Pause CPU if screen doesn't need updating */
@@ -175,12 +177,11 @@ void main()
       } else {
 	str[i] = '1'+i;
 	
-	state_advance(i+1); // advance state machine
+	state = state_advance_assembly(i+1); // advance state machine
 	
-	sm_update_lcd(); // LCD screen update 
-	sm_update_buzzer(); // buzzer update
+	sm_update_lcd_assembly(state); // LCD screen update 
+	sm_update_buzzer(state); // buzzer update
       }
-
     }
     str[4] = 0;  
     drawString8x12(screenWidth-40, 0, str, COLOR_WHITE, COLOR_BLACK);
@@ -190,8 +191,7 @@ void main()
 /** Watchdog timer interrupt handler. 15 interrupts/sec */
 void wdt_c_handler()
 {
-  sm_update_led(); // led must be updated for dimming
-  
+  sm_update_led(state);
   static short count = 0;
   
   P1OUT |= GREEN_LED;		      /**< Green LED on when cpu on */
