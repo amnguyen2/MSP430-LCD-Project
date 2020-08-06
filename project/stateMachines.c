@@ -6,14 +6,13 @@
 #include "buzzer.h"
 #include "stateAdvance.h"
 
-static char state = 0;
 extern unsigned int triangleColor;
 
 static char new_red_on;
 static char dimness = 0; // higher dimness = lower brightness
 static char f = 0; // for dimming functionality. is the led being flashed right now?
 
-void sm_update_led()
+void sm_update_led(char state)
 {
   dimness = 8;
   f++; // f iterates from 0 to 'dimness'
@@ -40,7 +39,7 @@ void sm_update_led()
   led_update();
 }
 
-void sm_update_buzzer()
+void sm_update_buzzer(char state)
 {
   switch(state) {
   case 1: // state 1
@@ -56,7 +55,9 @@ void sm_update_buzzer()
   return;
 }
 
-void sm_update_lcd()
+// sm_update_lcd written in smUpdateLCD.s
+/*
+void sm_update_lcd(char state)
 {
   switch(state) {
   case 1:
@@ -71,9 +72,11 @@ void sm_update_lcd()
     break;
   }
 }
+*/
 
-
-void state_advance(unsigned int in) {
+// state_advance written in stateAdvance.s
+/*
+char state_advance(unsigned int in) {
   switch(in) {
   case 1:
     state = 1;
@@ -87,5 +90,6 @@ void state_advance(unsigned int in) {
   default:
     break;
   }
+  return state;
 }
-
+*/
