@@ -3,11 +3,11 @@
 I wrote code to make the MSP430 board into a simple toy. The state machine I wrote
 plays notes using the buzzer and flashes the LEDs after pressing the buttons on the green board.
 The LCD screen draws shapes and text that change over time and when buttons are pressed. The CPU
-sleeps when the 4th button is pressed.
+sleeps when the 4th button is pressed. This project was developed in a Unix-based environment.
 
 ## Running the Program
 
-To compile and run the program on the MSP430, use:
+To compile and run the program on the MSP430, use the command:
 
 **$ make load**
 
